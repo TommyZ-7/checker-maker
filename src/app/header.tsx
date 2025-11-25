@@ -25,10 +25,10 @@ export default function Header() {
                 </Link>
                 <nav className="flex gap-4 items-center">
                     <Link href="/diagnostics" className="text-sm font-medium hover:text-primary transition-colors">
-                        Explore
+                        探す
                     </Link>
                     <Button as={Link} href="/create" color="primary" variant="flat" size="sm">
-                        Create Diagnostic
+                        診断を作成
                     </Button>
                     <Button isIconOnly variant="light" onPress={toggleTheme} aria-label="Toggle theme">
                         {!mounted ? (

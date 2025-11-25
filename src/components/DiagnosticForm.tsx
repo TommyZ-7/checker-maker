@@ -50,10 +50,10 @@ const QuestionListItem = ({
                         <DragHandle dragControls={dragControls} />
                         <div className="flex-grow min-w-0">
                             <p className="font-semibold truncate">
-                                {question.text || `Question ${index + 1}`}
+                                {question.text || `質問 ${index + 1}`}
                             </p>
                             <p className="text-tiny text-default-400">
-                                {question.choices.length} choices
+                                {question.choices.length} 選択肢
                             </p>
                         </div>
                         <Button
@@ -97,17 +97,17 @@ export default function DiagnosticForm() {
     // --- Step 0: Details ---
     const renderDetailsStep = () => (
         <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Diagnostic Details</h2>
+            <h2 className="text-2xl font-bold">診断の詳細</h2>
             <Input
-                label="Title"
-                placeholder="Enter diagnostic title"
+                label="タイトル"
+                placeholder="診断のタイトルを入力"
                 value={formData.title}
                 onValueChange={(val) => updateField('title', val)}
                 isRequired
             />
             <Textarea
-                label="Description"
-                placeholder="Enter diagnostic description"
+                label="説明"
+                placeholder="診断の説明を入力"
                 value={formData.description}
                 onValueChange={(val) => updateField('description', val)}
                 isRequired
@@ -183,7 +183,7 @@ export default function DiagnosticForm() {
                 {/* Left Column: List */}
                 <div className="w-1/3 flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <h3 className="text-xl font-bold">Questions</h3>
+                        <h3 className="text-xl font-bold">質問</h3>
                         <Button isIconOnly color="primary" size="sm" onPress={addQuestion}>
                             <Plus size={20} />
                         </Button>
@@ -203,7 +203,7 @@ export default function DiagnosticForm() {
                         </Reorder.Group>
                         {questions.length === 0 && (
                             <div className="text-center text-default-400 mt-10">
-                                No questions yet. Click + to add one.
+                                質問がまだありません。+をクリックして追加してください。
                             </div>
                         )}
                     </ScrollShadow>
@@ -214,36 +214,36 @@ export default function DiagnosticForm() {
                     {selectedQuestion ? (
                         <Card className="h-full">
                             <CardHeader>
-                                <h3 className="text-xl font-bold">Edit Question {selectedIndex + 1}</h3>
+                                <h3 className="text-xl font-bold">質問 {selectedIndex + 1} を編集</h3>
                             </CardHeader>
                             <Divider />
                             <CardBody className="gap-6 overflow-y-auto">
                                 <Input
-                                    label="Question Text"
-                                    placeholder="Enter your question here"
+                                    label="質問文"
+                                    placeholder="ここに質問を入力してください"
                                     value={selectedQuestion.text}
                                     onValueChange={(val) => updateQuestion(selectedIndex, 'text', val)}
                                 />
 
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
-                                        <h4 className="text-md font-semibold">Choices</h4>
+                                        <h4 className="text-md font-semibold">選択肢</h4>
                                         <Button size="sm" variant="flat" onPress={() => addChoice(selectedIndex)}>
-                                            Add Choice
+                                            選択肢を追加
                                         </Button>
                                     </div>
                                     <div className="space-y-3">
                                         {selectedQuestion.choices.map((c, cIndex) => (
                                             <div key={c.id} className="flex gap-2 items-start">
                                                 <Input
-                                                    placeholder="Choice text"
+                                                    placeholder="選択肢のテキスト"
                                                     value={c.text}
                                                     onValueChange={(val) => updateChoice(selectedIndex, cIndex, 'text', val)}
                                                     className="flex-grow"
                                                 />
                                                 <Input
                                                     type="number"
-                                                    placeholder="Pts"
+                                                    placeholder="点"
                                                     value={c.points.toString()}
                                                     onValueChange={(val) => updateChoice(selectedIndex, cIndex, 'points', parseInt(val) || 0)}
                                                     className="w-20"
@@ -259,7 +259,7 @@ export default function DiagnosticForm() {
                         </Card>
                     ) : (
                         <div className="h-full flex items-center justify-center text-default-400 bg-content2/30 rounded-lg border-2 border-dashed border-default-200">
-                            Select a question to edit
+                            編集する質問を選択してください
                         </div>
                     )}
                 </div>
@@ -375,8 +375,8 @@ export default function DiagnosticForm() {
         return (
             <div className="mb-6">
                 <div className="flex justify-between text-small text-default-500 mb-2">
-                    <span>{minScore} Points</span>
-                    <span>Max: {maxScore} Points</span>
+                    <span>{minScore} 点</span>
+                    <span>最大: {maxScore} 点</span>
                 </div>
                 <div className="h-8 w-full bg-default-100 rounded-full overflow-hidden relative border border-default-200">
                     {results.map((r, i) => {
@@ -405,7 +405,7 @@ export default function DiagnosticForm() {
                 {gaps.length > 0 && (
                     <div className="text-danger text-small mt-2 flex items-center gap-2">
                         <Trash size={14} className="rotate-45" />
-                        Missing coverage for: {gaps.map(g => `${g.start} to ${g.end}`).join(', ')}
+                        カバーされていない範囲: {gaps.map(g => `${g.start} to ${g.end}`).join(', ')}
                     </div>
                 )}
             </div>
@@ -421,9 +421,9 @@ export default function DiagnosticForm() {
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-2xl font-bold">Results Logic</h2>
+                        <h2 className="text-2xl font-bold">結果ロジック</h2>
                         <p className="text-default-500 text-small">
-                            Define results based on the total score ({minScore} to {maxScore}).
+                            合計スコアに基づいて結果を定義します ({minScore} から {maxScore})。
                         </p>
                     </div>
                 </div>
@@ -434,7 +434,7 @@ export default function DiagnosticForm() {
                     {/* Left Column: List */}
                     <div className="w-1/3 flex flex-col gap-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-bold">Results</h3>
+                            <h3 className="text-xl font-bold">結果</h3>
                             <Button isIconOnly color="primary" size="sm" onPress={addResult}>
                                 <Plus size={20} />
                             </Button>
@@ -449,10 +449,10 @@ export default function DiagnosticForm() {
                                         <CardBody className="p-3 flex flex-row items-center gap-2">
                                             <div className="flex-grow min-w-0">
                                                 <p className="font-semibold truncate">
-                                                    {r.title || `Result ${index + 1}`}
+                                                    {r.title || `結果 ${index + 1}`}
                                                 </p>
                                                 <p className="text-tiny text-default-400">
-                                                    {r.minPoints} to {r.maxPoints} pts
+                                                    {r.minPoints} から {r.maxPoints} 点
                                                 </p>
                                             </div>
                                             <Button
@@ -471,7 +471,7 @@ export default function DiagnosticForm() {
                             ))}
                             {results.length === 0 && (
                                 <div className="text-center text-default-400 mt-10">
-                                    No results yet. Click + to add one.
+                                    結果がまだありません。+をクリックして追加してください。
                                 </div>
                             )}
                         </ScrollShadow>
@@ -482,13 +482,13 @@ export default function DiagnosticForm() {
                         {selectedResult ? (
                             <Card className="h-full">
                                 <CardHeader>
-                                    <h3 className="text-xl font-bold">Edit Result {selectedIndex + 1}</h3>
+                                    <h3 className="text-xl font-bold">結果 {selectedIndex + 1} を編集</h3>
                                 </CardHeader>
                                 <Divider />
                                 <CardBody className="gap-6 overflow-y-auto">
                                     <Input
-                                        label="Result Title"
-                                        placeholder="e.g., You are a Warrior!"
+                                        label="結果のタイトル"
+                                        placeholder="例: あなたは戦士タイプです！"
                                         value={selectedResult.title}
                                         onValueChange={(val) => updateResult(selectedIndex, 'title', val)}
                                     />
@@ -496,7 +496,7 @@ export default function DiagnosticForm() {
                                     <div className="flex gap-4 items-center">
                                         <Input
                                             type="number"
-                                            label="Min Points"
+                                            label="最小点"
                                             value={selectedResult.minPoints.toString()}
                                             onValueChange={(val) => updateResult(selectedIndex, 'minPoints', val)}
                                             min={minScore}
@@ -505,7 +505,7 @@ export default function DiagnosticForm() {
                                         <span className="text-default-400">-</span>
                                         <Input
                                             type="number"
-                                            label="Max Points"
+                                            label="最大点"
                                             value={selectedResult.maxPoints.toString()}
                                             onValueChange={(val) => updateResult(selectedIndex, 'maxPoints', val)}
                                             min={minScore}
@@ -514,8 +514,8 @@ export default function DiagnosticForm() {
                                     </div>
 
                                     <Textarea
-                                        label="Description"
-                                        placeholder="Result description"
+                                        label="結果の説明"
+                                        placeholder="結果の説明を入力"
                                         value={selectedResult.description}
                                         onValueChange={(val) => updateResult(selectedIndex, 'description', val)}
                                         minRows={5}
@@ -524,7 +524,7 @@ export default function DiagnosticForm() {
                             </Card>
                         ) : (
                             <div className="h-full flex items-center justify-center text-default-400 bg-content2/30 rounded-lg border-2 border-dashed border-default-200">
-                                Select a result to edit
+                                編集する結果を選択してください
                             </div>
                         )}
                     </div>
@@ -535,7 +535,7 @@ export default function DiagnosticForm() {
 
     const handleSubmit = () => {
         console.log('Submitting Diagnostic:', formData);
-        alert('Diagnostic created! (Check console for data)');
+        alert('診断が作成されました！（コンソールを確認してください）');
         // In a real app, this would POST to an API
     };
 
@@ -552,7 +552,7 @@ export default function DiagnosticForm() {
                     ))}
                 </div>
                 <div className="text-small text-default-500">
-                    Step {step + 1} of 3
+                    ステップ {step + 1} / 3
                 </div>
             </div>
 
@@ -574,15 +574,15 @@ export default function DiagnosticForm() {
                     variant="flat"
                     onPress={handleBack}
                 >
-                    Back
+                    戻る
                 </Button>
                 {step < 2 ? (
                     <Button color="primary" onPress={handleNext}>
-                        Next
+                        次へ
                     </Button>
                 ) : (
                     <Button color="success" className="text-white" onPress={handleSubmit}>
-                        Create Diagnostic
+                        診断を作成
                     </Button>
                 )}
             </div>

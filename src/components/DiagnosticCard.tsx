@@ -4,6 +4,7 @@ import { Diagnostic } from '@/types';
 import { Card, CardHeader, CardBody, CardFooter, Button, Divider } from '@heroui/react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 interface DiagnosticCardProps {
     diagnostic: Diagnostic;
@@ -20,7 +21,7 @@ export default function DiagnosticCard({ diagnostic }: DiagnosticCardProps) {
                     <div className="flex flex-col">
                         <p className="text-md">{diagnostic.title}</p>
                         <p className="text-small text-default-500">
-                            {diagnostic.questions.length} Questions
+                            {diagnostic.questions.length} 質問
                         </p>
                     </div>
                 </CardHeader>
@@ -34,10 +35,11 @@ export default function DiagnosticCard({ diagnostic }: DiagnosticCardProps) {
                         as={Link}
                         href={`/diagnostics/${diagnostic.id}`}
                         color="primary"
-                        variant="solid"
-                        className="w-full"
+                        variant="flat"
+                        className="w-full font-semibold"
+                        endContent={<ArrowRight size={16} />}
                     >
-                        Start Diagnostic
+                        診断を開始
                     </Button>
                 </CardFooter>
             </Card>

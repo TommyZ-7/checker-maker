@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Diagnostic, ResultDefinition } from '@/types';
 import { Button, Card, CardBody, CardHeader, Progress } from '@heroui/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, RefreshCcw } from 'lucide-react';
+import Link from 'next/link';
 
 interface DiagnosticRunnerProps {
     diagnostic: Diagnostic;
@@ -47,93 +49,134 @@ export default function DiagnosticRunner({ diagnostic }: DiagnosticRunnerProps) 
         setResult(null);
     };
 
+    const handleRetake = () => {
+        reset();
+        setStarted(true);
+    };
+
+    const getResult = () => result;
+    const score = totalScore;
+    const showResult = finished;
+    const currentIndex = currentQuestionIndex;
+
     if (!started) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="text-center max-w-md"
                 >
-                    <h1 className="text-4xl font-bold mb-4">{diagnostic.title}</h1>
-                    <p className="text-xl text-default-600 mb-8">{diagnostic.description}</p>
-                    <Button size="lg" color="primary" onPress={handleStart} className="font-semibold">
-                        Start Diagnostic
+                    <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                        {diagnostic.title}
+                    </h1>
+                    <p className="text-xl text-default-500 mb-8 max-w-2xl">
+                        {diagnostic.description}
+                    </p>
+                    <Button
+                        color="primary"
+                        size="lg"
+                        className="font-semibold"
+                        endContent={<ArrowRight />}
+                        onPress={handleStart}
+                    >
+                        診断を開始
                     </Button>
                 </motion.div>
             </div>
         );
     }
 
-    if (finished && result) {
+    if (showResult) {
+        const result = getResult();
         return (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="text-center max-w-lg"
+                    className="max-w-2xl w-full"
                 >
-                    <Card className="p-6">
-                        <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
-                            <p className="text-tiny uppercase font-bold text-primary">Result</p>
-                            <h2 className="font-bold text-3xl">{result.title}</h2>
-                        </CardHeader>
-                        <CardBody className="overflow-visible py-4">
-                            <p className="text-lg text-default-600">{result.description}</p>
+                    <Card className="p-8 border-2 border-primary/20">
+                        <CardBody className="items-center">
+                            <h2 className="text-3xl font-bold mb-2">あなたの結果:</h2>
+                            <h3 className="text-4xl font-extrabold text-primary mb-4">
+                                {result?.title || "結果が見つかりません"}
+                            </h3>
+                            <p className="text-lg text-default-500 mb-6">
+                                {result?.description}
+                            </p>
+                            <div className="text-small text-default-400 mb-8">
+                                スコア: {score} 点
+                            </div>
+                            <div className="flex gap-4 justify-center">
+                                <Button
+                                    color="primary"
+                                    variant="flat"
+                                    onPress={handleRetake}
+                                    startContent={<RefreshCcw size={18} />}
+                                >
+                                    もう一度診断する
+                                </Button>
+                                <Button
+                                    as={Link}
+                                    href="/diagnostics"
+                                    variant="bordered"
+                                >
+                                    一覧に戻る
+                                </Button>
+                            </div>
                         </CardBody>
                     </Card>
-                    <div className="mt-8">
-                        <Button color="secondary" variant="flat" onPress={reset}>
-                            Retake Diagnostic
-                        </Button>
-                    </div>
                 </motion.div>
             </div>
         );
     }
 
-    const currentQuestion = diagnostic.questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex) / diagnostic.questions.length) * 100;
+    const currentQuestion = diagnostic.questions[currentIndex];
 
     return (
-        <div className="max-w-2xl mx-auto p-4 min-h-[60vh] flex flex-col justify-center">
+        <div className="max-w-3xl mx-auto p-4 min-h-[500px] flex flex-col justify-center">
             <div className="mb-8">
-                <Progress aria-label="Progress" value={progress} className="max-w-md mx-auto" color="primary" size="sm" />
-                <p className="text-center text-small text-default-400 mt-2">
-                    Question {currentQuestionIndex + 1} of {diagnostic.questions.length}
-                </p>
+                <div className="flex justify-between text-small text-default-500 mb-2">
+                    <span>質問 {currentIndex + 1} / {diagnostic.questions.length}</span>
+                    <span>{Math.round(((currentIndex) / diagnostic.questions.length) * 100)}% 完了</span>
+                </div>
+                <Progress
+                    value={((currentIndex) / diagnostic.questions.length) * 100}
+                    color="primary"
+                    className="h-2"
+                />
             </div>
 
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={currentQuestion.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    key={currentIndex}
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <h2 className="text-2xl font-semibold mb-6 text-center">{currentQuestion.text}</h2>
-                    <div className="grid gap-4">
-                        {currentQuestion.choices.map((choice, index) => (
-                            <motion.div
-                                key={choice.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Button
-                                    className="w-full h-auto py-4 text-left justify-start whitespace-normal"
-                                    variant="bordered"
-                                    size="lg"
-                                    onPress={() => handleAnswer(choice.points)}
-                                >
-                                    {choice.text}
-                                </Button>
-                            </motion.div>
-                        ))}
-                    </div>
+                    <Card className="p-6 mb-6">
+                        <CardBody>
+                            <h2 className="text-2xl font-bold mb-6">
+                                {currentQuestion.text}
+                            </h2>
+                            <div className="grid gap-4">
+                                {currentQuestion.choices.map((choice) => (
+                                    <Button
+                                        key={choice.id}
+                                        size="lg"
+                                        variant="flat"
+                                        className="justify-start h-auto py-4 px-6 text-left whitespace-normal"
+                                        onPress={() => handleAnswer(choice.points)}
+                                    >
+                                        {choice.text}
+                                    </Button>
+                                ))}
+                            </div>
+                        </CardBody>
+                    </Card>
                 </motion.div>
             </AnimatePresence>
         </div>
