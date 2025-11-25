@@ -15,10 +15,10 @@ export default function Home() {
         className="text-center max-w-2xl px-4"
       >
         <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-          独自の診断を作成
+          Checker Maker
         </h1>
         <p className="text-xl text-default-500 mb-10">
-          インタラクティブな診断テストを簡単に作成、共有、プレイできます。
+          様々な診断テストを簡単に作成、共有
         </p>
         <div className="flex gap-4 justify-center">
           <Button
@@ -29,7 +29,7 @@ export default function Home() {
             className="font-semibold"
             endContent={<ArrowRight size={20} />}
           >
-            はじめる
+            診断を作る
           </Button>
           <Button
             as={Link}

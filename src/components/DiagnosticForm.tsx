@@ -5,6 +5,14 @@ import { Diagnostic, Question, Choice, ResultDefinition } from '@/types';
 import { Input, Textarea, Button, Card, CardBody, CardHeader, Divider, Select, SelectItem, ScrollShadow } from '@heroui/react';
 import { motion, Reorder, useDragControls } from 'framer-motion';
 import { Plus, Trash, ArrowRight, ArrowLeft, GripVertical } from 'lucide-react';
+import {
+    MAX_TITLE_LENGTH,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_QUESTION_TEXT_LENGTH,
+    MAX_CHOICE_TEXT_LENGTH,
+    MAX_RESULT_TITLE_LENGTH,
+    MAX_RESULT_DESCRIPTION_LENGTH
+} from '@/lib/validation';
 
 // Drag handle component
 const DragHandle = ({ dragControls }: { dragControls: any }) => {
@@ -104,6 +112,8 @@ export default function DiagnosticForm() {
                 value={formData.title}
                 onValueChange={(val) => updateField('title', val)}
                 isRequired
+                maxLength={MAX_TITLE_LENGTH}
+                description={`${formData.title?.length || 0}/${MAX_TITLE_LENGTH}`}
             />
             <Textarea
                 label="説明"
@@ -111,6 +121,8 @@ export default function DiagnosticForm() {
                 value={formData.description}
                 onValueChange={(val) => updateField('description', val)}
                 isRequired
+                maxLength={MAX_DESCRIPTION_LENGTH}
+                description={`${formData.description?.length || 0}/${MAX_DESCRIPTION_LENGTH}`}
             />
         </div>
     );
@@ -223,6 +235,8 @@ export default function DiagnosticForm() {
                                     placeholder="ここに質問を入力してください"
                                     value={selectedQuestion.text}
                                     onValueChange={(val) => updateQuestion(selectedIndex, 'text', val)}
+                                    maxLength={MAX_QUESTION_TEXT_LENGTH}
+                                    description={`${selectedQuestion.text.length}/${MAX_QUESTION_TEXT_LENGTH}`}
                                 />
 
                                 <div>
@@ -240,6 +254,7 @@ export default function DiagnosticForm() {
                                                     value={c.text}
                                                     onValueChange={(val) => updateChoice(selectedIndex, cIndex, 'text', val)}
                                                     className="flex-grow"
+                                                    maxLength={MAX_CHOICE_TEXT_LENGTH}
                                                 />
                                                 <Input
                                                     type="number"
@@ -491,6 +506,8 @@ export default function DiagnosticForm() {
                                         placeholder="例: あなたは戦士タイプです！"
                                         value={selectedResult.title}
                                         onValueChange={(val) => updateResult(selectedIndex, 'title', val)}
+                                        maxLength={MAX_RESULT_TITLE_LENGTH}
+                                        description={`${selectedResult.title.length}/${MAX_RESULT_TITLE_LENGTH}`}
                                     />
 
                                     <div className="flex gap-4 items-center">
@@ -519,6 +536,8 @@ export default function DiagnosticForm() {
                                         value={selectedResult.description}
                                         onValueChange={(val) => updateResult(selectedIndex, 'description', val)}
                                         minRows={5}
+                                        maxLength={MAX_RESULT_DESCRIPTION_LENGTH}
+                                        description={`${selectedResult.description.length}/${MAX_RESULT_DESCRIPTION_LENGTH}`}
                                     />
                                 </CardBody>
                             </Card>
@@ -533,10 +552,27 @@ export default function DiagnosticForm() {
         );
     };
 
-    const handleSubmit = () => {
-        console.log('Submitting Diagnostic:', formData);
-        alert('診断が作成されました！（コンソールを確認してください）');
-        // In a real app, this would POST to an API
+    const handleSubmit = async () => {
+        const diagnosticToSave: Diagnostic = {
+            ...formData as Diagnostic,
+            id: formData.id || `d_${Date.now()}`,
+            createdAt: new Date().toISOString(),
+        };
+
+        try {
+            const { saveDiagnostic } = await import('@/app/actions');
+            const result = await saveDiagnostic(diagnosticToSave);
+
+            if (result.success) {
+                alert('診断が作成されました！');
+                // Redirect or reset form could be added here
+            } else {
+                alert(`診断の保存に失敗しました。\n${result.error || ''}`);
+            }
+        } catch (error) {
+            console.error('Error saving diagnostic:', error);
+            alert('エラーが発生しました。');
+        }
     };
 
     return (

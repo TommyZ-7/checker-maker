@@ -1,4 +1,4 @@
-import { DUMMY_DIAGNOSTICS } from '@/data/dummy';
+import { getDiagnostic } from '@/app/actions';
 import DiagnosticRunner from '@/components/DiagnosticRunner';
 import { notFound } from 'next/navigation';
 
@@ -8,7 +8,7 @@ interface Props {
 
 export default async function DiagnosticPlayPage({ params }: Props) {
     const { id } = await params;
-    const diagnostic = DUMMY_DIAGNOSTICS.find((d) => d.id === id);
+    const diagnostic = await getDiagnostic(id);
 
     if (!diagnostic) {
         notFound();
